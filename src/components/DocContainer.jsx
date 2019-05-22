@@ -8,6 +8,8 @@ import qs from 'qs';
 import { ThemeProvider } from '@databyss-org/ui';
 import Doc from './Doc.jsx';
 import DocHead from './DocHead.jsx';
+import DocHeadMotif from './DocHeadMotif.jsx';
+
 import Disambiguate from './Disambiguate.jsx';
 import appActions from '../redux/app/actions';
 import searchActions from '../redux/search/actions';
@@ -15,7 +17,9 @@ import withLoader from '../hoc/withLoader';
 import freezeProps from '../hoc/freezeProps';
 import { parseTerm } from '../lib/url';
 import styles from '../app.scss';
-import MotifLanding from './Landing/MotifLanding.jsx';
+//import MotifLanding from './Landing/MotifLanding.jsx';
+import MotifLanding from './MotifLanding.jsx';
+
 import theme from '../theme';
 
 const { DEFAULT_AUTHOR } = process.env;
@@ -140,10 +144,44 @@ const DocContainer = ({
           onClick={e => onClick({ e, history, showDisambiguate })}
           className={cx(styles.docContainer, {
             [styles.withAside]: query.aside,
+            /* TEMPORARY FOR MOTIF TESTINGS
             [styles.landing]: query.motif,
+           */
           })}
         >
-          {!query.motif && <DocHead transitionState={state} query={query} />}
+          {!query.motif ? (
+            <DocHead transitionState={state} query={query} />
+          ) : (
+            <DocHeadMotif
+              transitionState={state}
+              motif={motif}
+              cfList={
+                motif.cfauthors
+                  ? motif.cfauthors
+                      .filter(id => id !== DEFAULT_AUTHOR)
+                      .concat(DEFAULT_AUTHOR)
+                      .reduce(
+                        (list, id) =>
+                          query.author === id
+                            ? list
+                            : list.concat(app.authorDict[id]),
+                        []
+                      )
+                  : null
+              }
+              meta={
+                query.filterBy
+                  ? app.config.source_motif_meta
+                  : app.config.motif_meta
+              }
+              author={app.authorDict[query.author]}
+              query={query}
+              source={query.filterBy && app.biblio[query.filterBy]}
+              showAll={!query.groupBy}
+              app={app}
+            />
+          )}
+
           <div
             className={cx(styles.doc, styles[state], {
               [styles.show]: true,

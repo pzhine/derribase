@@ -4,21 +4,25 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import pluralize from 'pluralize';
 import {
-  Landing,
-  LandingEntries,
-  LandingSources,
+  ContentNav,
+  TocList,
   Link,
   Raw,
   Entry,
   EntriesByLocation,
   EntriesBySource,
+  Content,
+  ContentHeading,
+  BackButton,
+  ForwardButton,
 } from '@databyss-org/ui';
 import renderTemplate from 'react-text-templates';
 import { Helmet } from 'react-helmet';
-import actions from '../../redux/app/actions';
-import { textify } from '../../lib/_helpers';
+import actions from '../redux/app/actions';
+import { textify } from '../lib/_helpers';
+import styles from '../app.scss';
 
-class MotifLanding extends React.Component {
+class MotifLandingCopy extends React.Component {
   constructor(props) {
     super(props);
     this.onSourceClick = this.onSourceClick.bind(this);
@@ -29,6 +33,7 @@ class MotifLanding extends React.Component {
     this.onAllEntriesClick = this.onAllEntriesClick.bind(this);
     this.onSourcesClick = this.onSourcesClick.bind(this);
   }
+
   updateTemplates() {
     const { motif, cfList, meta, author, query, source, showAll } = this.props;
     this.templateTokens = {
@@ -89,23 +94,41 @@ class MotifLanding extends React.Component {
   }
   renderSourcesToc() {
     const { motif, query } = this.props;
+
+    const renderSource = source => {
+      const href = `/motif/${query.resource}/sources/${source.id}`;
+      return (
+        <Link href={href} onClick={this.onSourceClick(href)}>
+          <Raw
+            html={`${source.name}${
+              source.entryCount ? ` (${source.entryCount})` : null
+            }`}
+          />
+        </Link>
+      );
+    };
+
     return (
-      <LandingSources
-        sources={motif.sources}
-        onAllEntriesClick={this.onAllEntriesClick}
-        renderSource={source => {
-          const href = `/motif/${query.resource}/sources/${source.id}`;
-          return (
-            <Link href={href} onClick={this.onSourceClick(href)}>
-              <Raw
-                html={`${source.name}${
-                  source.entryCount ? ` (${source.entryCount})` : null
-                }`}
-              />
-            </Link>
-          );
-        }}
-      />
+      <div>
+        <ContentHeading>
+          <Raw html={this.contentTitle} />
+        </ContentHeading>
+        <ContentNav
+          right={
+            <ForwardButton
+              label='All Entries'
+              onClick={this.onAllEntriesClick}
+            />
+          }
+        >
+          <TocList ariaLabel='sources' className={styles.sourcesToc}>
+            {motif.sources.map(source =>
+              React.cloneElement(renderSource(source), { key: source.id })
+            )}
+          </TocList>
+        </ContentNav>
+        {}
+      </div>
     );
   }
   renderEntries(source) {
@@ -118,32 +141,68 @@ class MotifLanding extends React.Component {
         content={motifLinksAreActive ? entry.linkedContent : entry.content}
       />
     );
+
     return (
-      <LandingEntries
-        onMotifLinksChange={this.onMotifLinksChange}
-        showMotifLinks={motifLinksAreActive}
-        onSourcesClick={this.onSourcesClick}
-      >
-        {source ? (
-          <EntriesByLocation
-            locations={this.props.motif.entriesByLocation}
-            renderEntry={renderEntry}
-            source={source}
-          />
-        ) : (
-          <EntriesBySource
-            sources={this.props.motif.sources}
-            renderEntry={renderEntry}
-          />
-        )}
-      </LandingEntries>
+      <div>
+        <ContentHeading>
+          <Raw html={this.contentTitle} />
+        </ContentHeading>
+        <ContentNav
+          left={<BackButton label='Sources' onClick={this.onSourcesClick} />}
+        >
+          {source ? (
+            <EntriesByLocation
+              locations={this.props.motif.entriesByLocation}
+              renderEntry={renderEntry}
+              source={source}
+            />
+          ) : (
+            <EntriesBySource
+              sources={this.props.motif.sources}
+              renderEntry={renderEntry}
+            />
+          )}
+        </ContentNav>
+      </div>
     );
   }
+
   render() {
-    const { source, showAll, meta } = this.props;
+    const { source, showAll, meta, query } = this.props;
     const { META_TITLE, META_DESCRIPTION, META_KEYWORDS } = meta;
     this.updateTemplates();
     return (
+      <Content {...this.landingProps}>
+        <Helmet>
+          <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
+          <meta
+            name='description'
+            content={renderTemplate(META_DESCRIPTION, this.textOnlyTokens)}
+          />
+          <meta
+            name='keywords'
+            content={renderTemplate(META_KEYWORDS, this.textOnlyTokens)}
+          />
+        </Helmet>
+        {source || showAll
+          ? this.renderEntries(source)
+          : this.renderSourcesToc()}{' '}
+      </Content>
+    );
+  }
+}
+
+export default compose(
+  connect(
+    state => state,
+    actions
+  ),
+  withRouter
+)(MotifLandingCopy);
+
+/*
+
+      THIS IS THE ORIGINAL RETURN FUNCTION
       <Landing {...this.landingProps}>
         <Helmet>
           <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
@@ -160,14 +219,52 @@ class MotifLanding extends React.Component {
           ? this.renderEntries(source)
           : this.renderSourcesToc()}
       </Landing>
-    );
-  }
-}
+        */
 
-export default compose(
-  connect(
-    state => state,
-    actions
-  ),
-  withRouter
-)(MotifLanding);
+/*
+       ==========================
+       old landing entries 
+       <LandingEntries
+         onMotifLinksChange={this.onMotifLinksChange}
+         showMotifLinks={motifLinksAreActive}
+         onSourcesClick={this.onSourcesClick}
+       >
+         {source ? (
+           <EntriesByLocation
+             locations={this.props.motif.entriesByLocation}
+             renderEntry={renderEntry}
+             source={source}
+           />
+         ) : (
+           <EntriesBySource
+             sources={this.props.motif.sources}
+             renderEntry={renderEntry}
+           />
+         )}
+       </LandingEntries>
+         */
+
+/*
+
+         =-------------------
+
+
+         OLD LANDING SOURCES
+        <LandingSources
+          sources={motif.sources}
+          onAllEntriesClick={this.onAllEntriesClick}
+          renderSource={source => {
+            const href = `/motif/${query.resource}/sources/${source.id}`;
+            return (
+              <Link href={href} onClick={this.onSourceClick(href)}>
+                <Raw
+                  html={`${source.name}${
+                    source.entryCount ? ` (${source.entryCount})` : null
+                  }`}
+                />
+              </Link>
+            );
+          }}
+        />
+
+        */

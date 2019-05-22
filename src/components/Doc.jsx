@@ -19,7 +19,7 @@ class Doc extends PureComponent {
     this._updateRows(this.props);
     this.lastScroll = {
       query: null,
-      hash: null
+      hash: null,
     };
     this.setScroll = this.setScroll.bind(this);
   }
@@ -34,9 +34,8 @@ class Doc extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const queryChanged = !shallowequal(this.query, nextProps.query);
-    const resultsChanged = (
-      this.props.searchState.results !== nextProps.searchState.results
-    );
+    const resultsChanged =
+      this.props.searchState.results !== nextProps.searchState.results;
 
     if (queryChanged) {
       this.query = nextProps.query;
@@ -76,13 +75,14 @@ class Doc extends PureComponent {
       term,
       isLinked,
       resource,
-      filterBy
+      filterBy,
     } = this.query;
     const { path } = this.props;
-
+    console.log(motif);
+    console.log(filterBy);
     if (motif && filterBy) {
       this._rows = [term];
-      this._rowComponent = ({ index, key, style }) =>
+      this._rowComponent = ({ index, key, style }) => (
         <EntriesByMotif
           doc={doc}
           isLinked={isLinked}
@@ -91,14 +91,14 @@ class Doc extends PureComponent {
           style={style}
           path={path}
           setScroll={this.setScroll}
-          />;
+        />
+      );
     } else if (motif) {
       this._rows = [term];
-      this._rowComponent = () =>
-        <SourcesByMotif doc={doc} term={term} />;
+      this._rowComponent = () => <SourcesByMotif doc={doc} term={term} />;
     } else if (source) {
       this._rows = [term];
-      this._rowComponent = ({ index, key, style }) =>
+      this._rowComponent = ({ index, key, style }) => (
         <EntriesBySource
           isLinked={isLinked}
           sid={term}
@@ -109,10 +109,11 @@ class Doc extends PureComponent {
           showHeader
           setScroll={this.setScroll}
           showMotifNav={this.query.author === DEFAULT_AUTHOR}
-        />;
+        />
+      );
     } else if (search) {
       this._rows = Object.keys(results[term]);
-      this._rowComponent = ({ index, key, style }) =>
+      this._rowComponent = ({ index, key, style }) => (
         <EntriesBySource
           sid={this._rows[index]}
           isLinked={isLinked}
@@ -124,17 +125,24 @@ class Doc extends PureComponent {
           path={path}
           setScroll={this.setScroll}
           showMotifNav={this.query.author === DEFAULT_AUTHOR}
-        />;
+        />
+      );
     }
   }
 
   render() {
     return this._rows.map((key, index) =>
-      this._rowComponent({ index, key, style: {} }));
+      this._rowComponent({ index, key, style: {} })
+    );
   }
 }
 
-export default withRouter(connect(state => ({
-  appState: state.app,
-  searchState: state.search
-}), { ...appActions, ...searchActions })(Doc));
+export default withRouter(
+  connect(
+    state => ({
+      appState: state.app,
+      searchState: state.search,
+    }),
+    { ...appActions, ...searchActions }
+  )(Doc)
+);
