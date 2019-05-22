@@ -2,9 +2,9 @@
   display: flex;
   align-items: center;
   overflow: visible;
-
+  margin-right: 24px;
   .label {
-    color: #4A4A4A;
+    color: #4a4a4a;
     font-size: 14px;
     height: 15px;
     font-family: 'DINNextLTPro-Light';
@@ -16,8 +16,8 @@
   .switch {
     width: 38px;
     height: 21px;
-    background-color: rgba(105,102,99,0.10);
-    border: 1px solid rgba(104,101,98,0.47);
+    background-color: rgba(105, 102, 99, 0.1);
+    border: 1px solid rgba(104, 101, 98, 0.47);
     border-radius: 4px;
     position: relative;
     transition: all 150ms linear;
@@ -25,9 +25,9 @@
 
     &:before {
       content: '';
-      background: #FFFFFF;
-      border: 1px solid rgba(105,103,100,0.30);
-      box-shadow: 0 2px 3px 0 rgba(0,0,0,0.32);
+      background: #ffffff;
+      border: 1px solid rgba(105, 103, 100, 0.3);
+      box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.32);
       border-radius: 4px;
       position: absolute;
       transition: all 150ms ease-in-out;

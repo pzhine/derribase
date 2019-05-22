@@ -22,6 +22,10 @@ import actions from '../redux/app/actions';
 import { textify } from '../lib/_helpers';
 import styles from '../app.scss';
 
+let thisStyle = {
+  marginTop: '0px',
+};
+
 class MotifLandingCopy extends React.Component {
   constructor(props) {
     super(props);
@@ -38,14 +42,14 @@ class MotifLandingCopy extends React.Component {
     const { motif, cfList, meta, author, query, source, showAll } = this.props;
     this.templateTokens = {
       AUTHOR_NAME: `${author.firstName} ${author.lastName}`,
-      MOTIF_NAME: <Raw html={motif.name} />,
+      MOTIF_NAME: motif.name,
       ENTRY_COUNT: motif.entryCount
         ? `${motif.entryCount} ${pluralize('entry', motif.entryCount)}`
         : '',
       SOURCE_COUNT: motif.sources
         ? `${motif.sources.length} ${pluralize('source', motif.sources.length)}`
         : '',
-      SOURCE_TITLE: <Raw html={source && source.name} />,
+      SOURCE_TITLE: source && source.name,
     };
     this.textOnlyTokens = {
       ...this.templateTokens,
@@ -107,10 +111,9 @@ class MotifLandingCopy extends React.Component {
         </Link>
       );
     };
-
     return (
-      <div>
-        <ContentHeading>
+      <Content>
+        <ContentHeading style={thisStyle}>
           <Raw html={this.contentTitle} />
         </ContentHeading>
         <ContentNav
@@ -121,14 +124,15 @@ class MotifLandingCopy extends React.Component {
             />
           }
         >
-          <TocList ariaLabel='sources' className={styles.sourcesToc}>
-            {motif.sources.map(source =>
-              React.cloneElement(renderSource(source), { key: source.id })
-            )}
-          </TocList>
+          {' '}
         </ContentNav>
-        {}
-      </div>
+
+        <TocList ariaLabel='sources' style={styles.sourcesToc}>
+          {motif.sources.map(source =>
+            React.cloneElement(renderSource(source), { key: source.id })
+          )}
+        </TocList>
+      </Content>
     );
   }
   renderEntries(source) {
@@ -143,8 +147,8 @@ class MotifLandingCopy extends React.Component {
     );
 
     return (
-      <div>
-        <ContentHeading>
+      <Content>
+        <ContentHeading style={thisStyle}>
           <Raw html={this.contentTitle} />
         </ContentHeading>
         <ContentNav
@@ -163,7 +167,7 @@ class MotifLandingCopy extends React.Component {
             />
           )}
         </ContentNav>
-      </div>
+      </Content>
     );
   }
 
@@ -199,72 +203,3 @@ export default compose(
   ),
   withRouter
 )(MotifLandingCopy);
-
-/*
-
-      THIS IS THE ORIGINAL RETURN FUNCTION
-      <Landing {...this.landingProps}>
-        <Helmet>
-          <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
-          <meta
-            name='description'
-            content={renderTemplate(META_DESCRIPTION, this.textOnlyTokens)}
-          />
-          <meta
-            name='keywords'
-            content={renderTemplate(META_KEYWORDS, this.textOnlyTokens)}
-          />
-        </Helmet>
-        {source || showAll
-          ? this.renderEntries(source)
-          : this.renderSourcesToc()}
-      </Landing>
-        */
-
-/*
-       ==========================
-       old landing entries 
-       <LandingEntries
-         onMotifLinksChange={this.onMotifLinksChange}
-         showMotifLinks={motifLinksAreActive}
-         onSourcesClick={this.onSourcesClick}
-       >
-         {source ? (
-           <EntriesByLocation
-             locations={this.props.motif.entriesByLocation}
-             renderEntry={renderEntry}
-             source={source}
-           />
-         ) : (
-           <EntriesBySource
-             sources={this.props.motif.sources}
-             renderEntry={renderEntry}
-           />
-         )}
-       </LandingEntries>
-         */
-
-/*
-
-         =-------------------
-
-
-         OLD LANDING SOURCES
-        <LandingSources
-          sources={motif.sources}
-          onAllEntriesClick={this.onAllEntriesClick}
-          renderSource={source => {
-            const href = `/motif/${query.resource}/sources/${source.id}`;
-            return (
-              <Link href={href} onClick={this.onSourceClick(href)}>
-                <Raw
-                  html={`${source.name}${
-                    source.entryCount ? ` (${source.entryCount})` : null
-                  }`}
-                />
-              </Link>
-            );
-          }}
-        />
-
-        */

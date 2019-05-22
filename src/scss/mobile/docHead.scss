@@ -5,7 +5,7 @@
   align-items: stretch;
   font-size: 1em;
   padding: 1em;
-  border-bottom: 1px solid #D6D6D6;
+  border-bottom: 1px solid #d6d6d6;
   margin-top: 9vh;
   position: relative;
   z-index: 10;
@@ -22,8 +22,7 @@
   .toggle {
     position: fixed;
     right: 1.5em;
-    width: 86px;
-
+    // width: 86px;
     .label {
       height: 2em;
       font-size: 12px;
@@ -33,7 +32,8 @@
     }
   }
 
-  &.entered, &.entering {
+  &.entered,
+  &.entering {
     left: -100vw;
   }
 
@@ -82,7 +82,8 @@
       color: #000;
       line-height: 1.15em;
     }
-    .stats, .authors {
+    .stats,
+    .authors {
       font-family: 'DINNextLTPro-Light';
       font-size: 0.9em;
       flex-grow: 0;
@@ -92,7 +93,9 @@
       span {
         @include commas();
       }
-      a, a:hover, a:visited {
+      a,
+      a:hover,
+      a:visited {
         color: #808080;
         text-decoration: underline;
       }

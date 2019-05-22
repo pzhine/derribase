@@ -1,6 +1,6 @@
 .docHead {
   .toggle {
-    width: 86px;
+    //width: 86px;
 
     .label {
       height: 2.1em;
@@ -20,7 +20,8 @@
     flex-wrap: 'wrap';
   }
 
-  &.entered, &.entering {
+  &.entered,
+  &.entering {
     .toggle {
       right: 1.6em;
     }

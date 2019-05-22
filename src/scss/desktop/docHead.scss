@@ -5,8 +5,8 @@
   align-items: stretch;
   font-size: 1em;
   padding-bottom: 1em;
-  border-bottom: 1px solid #D6D6D6;
-  box-shadow: 0 11px 15px 12px #FFFFFF;
+  border-bottom: 1px solid #d6d6d6;
+  box-shadow: 0 11px 15px 12px #ffffff;
   margin-top: 9vh;
   position: relative;
   z-index: 10;
@@ -64,7 +64,8 @@
       color: #000;
       line-height: 1.15em;
     }
-    .stats, .authors {
+    .stats,
+    .authors {
       font-family: 'DINNextLTPro-Light';
       font-size: 0.9em;
       flex-grow: 0;
@@ -74,7 +75,9 @@
       span {
         @include commas();
       }
-      a, a:hover, a:visited {
+      a,
+      a:hover,
+      a:visited {
         color: #808080;
         text-decoration: underline;
       }
