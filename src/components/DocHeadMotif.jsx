@@ -21,6 +21,12 @@ class DocHeadMotif extends PureComponent {
   constructor(props) {
     super(props);
     this.updateTemplates = this.updateTemplates.bind(this);
+    this.headerContainer = React.createRef();
+  }
+
+  componentDidMount() {
+    let newWidth = this.headerContainer.getBoundingClientRect().width - 115;
+    this.headerContainer.style.width = `${newWidth}px`;
   }
 
   updateTemplates() {
@@ -84,14 +90,17 @@ class DocHeadMotif extends PureComponent {
               />
             </div>
           )}
-          <PageHeading>
-            <Raw html={this.landingProps.title} />
-          </PageHeading>
-          {this.landingProps.subtitle && (
-            <PageSubHeading>
-              <Raw html={this.landingProps.subtitle} />
-            </PageSubHeading>
-          )}
+          <div ref={element => (this.headerContainer = element)}>
+            <PageHeading>
+              <Raw html={this.landingProps.title} />
+            </PageHeading>
+            {this.landingProps.subtitle && (
+              <PageSubHeading>
+                <Raw html={this.landingProps.subtitle} />
+              </PageSubHeading>
+            )}
+          </div>
+
           {this.landingProps.cfList && (
             <PageNav ariaLabel='compare with'>
               <CommaSeparatedList opener={'[cf.\u00A0'} closer={']'}>
